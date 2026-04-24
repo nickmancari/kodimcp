@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"kodi-mcp/internal/kodi"
+	"kodimcp/internal/kodi"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
