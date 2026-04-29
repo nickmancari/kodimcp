@@ -19,6 +19,7 @@ func Init(k *kodi.KodiClient) *server.MCPServer {
 
 
 	AddPlayerTools(s, k)
+	AddStandardTools(s, k)
 
 	return s
 }
