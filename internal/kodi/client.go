@@ -8,15 +8,15 @@ import (
 	"time"
 )
 
-type Client struct {
+type KodiClient struct {
 	BaseURL  string
 	User     string
 	Password string
 	client   *http.Client
 }
 
-func New(baseURL, user, password string) *Client {
-	return &Client{
+func New(baseURL, user, password string) *KodiClient {
+	return &KodiClient{
 		BaseURL: baseURL,
 		User: user,
 		Password: password,
@@ -24,7 +24,7 @@ func New(baseURL, user, password string) *Client {
 	}
 }
 
-func (c *Client) Call(method string, params any) (map[string]any, error) {
+func (c *KodiClient) Call(method string, params any) (map[string]any, error) {
 	body := map[string]any{
 		"jsonrpc": "2.0",
 		"id":      1,

@@ -1,13 +1,12 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"os"
 
 	"kodimcp/internal/kodi"
+	"kodimcp/internal/mcpserver"
 
-	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
 
@@ -18,13 +17,9 @@ func main() {
 
 	k := kodi.New(kodiURL, kodiUser, kodiPass)
 
-	s := server.NewMCPServer(
-		"Kodi LibreELEC MCP",
-		"0.1.0",
-		server.WithToolCapabilities(false),
-		server.WithRecovery(),
-	)
+	s := mcpserver.Init(k)
 
+/*	
 	s.AddTool(
 		mcp.NewTool("kodi_ping",
 			mcp.WithDescription("Check if Kodi JSON-RPC is reachable"),
@@ -92,7 +87,7 @@ func main() {
 			return mcp.NewToolResultText(fmt.Sprintf("Started playback: %v", res["result"])), nil
 		},
 	)
-
+*/
 	if err := server.ServeStdio(s); err != nil {
 		fmt.Fprintf(os.Stderr, "server error: %v\n", err)
 		os.Exit(1)
