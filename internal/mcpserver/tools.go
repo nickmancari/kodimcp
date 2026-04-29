@@ -24,4 +24,18 @@ func AddPlayerTools(s *server.MCPServer, k *kodi.KodiClient) {
 			return mcp.NewToolResultText(fmt.Sprintf("Kodi responded: %v", result)), nil
 		},
 	)
+
+	s.AddTool(
+		mcp.NewTool("kodi_pause",
+			mcp.WithDescription("Toggle play/pause for the active Kodi video player"),
+		),
+		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			result, err := k.Pause(1)
+			if err != nil {
+				return mcp.NewToolResultError(err.Error()), nil
+			}
+
+			return mcp.NewToolResultText(fmt.Sprintf("Pause toggled: %v", result)), nil
+		},
+	)
 }
