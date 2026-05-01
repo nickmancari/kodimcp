@@ -20,6 +20,7 @@ func Init(k *kodi.KodiClient) *server.MCPServer {
 
 	AddPlayerTools(s, k)
 	AddStandardTools(s, k)
+	AddVideoLibraryTools(s, k)
 
 	return s
 }
