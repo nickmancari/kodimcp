@@ -3,6 +3,7 @@ package mcpserver
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"kodimcp/internal/kodi"
 
@@ -27,7 +28,7 @@ func AddPlayerTools(s *server.MCPServer, k *kodi.KodiClient) {
 	
 	s.AddTool(
 		mcp.NewTool("kodi_play_file",
-			mcp.WithDescription("Play a file or network path in Kodi"),
+			mcp.WithDescription("Play a Kodi-accessible file path. The file argument must be the raw path only, such as smb://server/share/movie.mkv. Do not include labels or extra text."),
 			mcp.WithString("file",
 				mcp.Required(),
 				mcp.Description("File path or URL Kodi can access, such as smb://server/share/movie.mkv"),
@@ -38,6 +39,9 @@ func AddPlayerTools(s *server.MCPServer, k *kodi.KodiClient) {
 			if err != nil {
 				return mcp.NewToolResultError(err.Error()), nil
 			}
+
+			// Debug layer
+			fmt.Fprintf(os.Stderr, "kodi_play_file received file: %q\n", file)
 
 			result, err := k.PlayFile(file)
 			if err != nil {
@@ -91,13 +95,13 @@ func AddVideoLibraryTools(s *server.MCPServer, k *kodi.KodiClient) {
 				return mcp.NewToolResultError(err.Error()), nil
 			}
 
-			return mcp.NewToolResultText(fmt.Sprint("Kodi responded: %v", result)), nil
+			return mcp.NewToolResultText(fmt.Sprintf("Kodi responded: %v", result)), nil
 		},
 	)
 
 	s.AddTool(
 		mcp.NewTool("kodi_get_movie_file_by_title",
-			mcp.WithDescription("Get a single movie file by the title provided"),
+			mcp.WithDescription("Get the raw Kodi file path for a single movie title. Use this before kodi_play_file when the user asks to play a movie by title."),
 			mcp.WithString("title",
 				mcp.Required(),
 				mcp.Description("Title of the movie like Jaws or Star Wars"),
@@ -114,7 +118,7 @@ func AddVideoLibraryTools(s *server.MCPServer, k *kodi.KodiClient) {
 				return mcp.NewToolResultError(err.Error()), nil
 			}
 
-			return mcp.NewToolResultText(fmt.Sprint("Kodi responded: %v", result)), nil
+			return mcp.NewToolResultText(fmt.Sprintf("%v", result)), nil
 		},
 	)
 }

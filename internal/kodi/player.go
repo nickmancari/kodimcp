@@ -29,13 +29,13 @@ func (c *KodiClient) PlayFile(file string) (any, error) {
 }
 
 func (c *KodiClient) GetNowPlaying(playerID int) (any, error) {
-	res, err := c.Call("Player.GetItem"), map[string]any{
+	res, err := c.Call("Player.GetItem", map[string]any{
 		"playerid": playerID,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return res["result"]
+	return res["result"], nil
 
 }
