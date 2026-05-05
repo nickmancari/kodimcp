@@ -65,6 +65,36 @@ func AddPlayerTools(s *server.MCPServer, k *kodi.KodiClient) {
 			return mcp.NewToolResultText(fmt.Sprintf("Kodi responded: %v", result)), nil
 		},
 	)
+
+	s.AddTool(
+		mcp.NewTool("kodi_play_movie_by_title",
+			mcp.WithDescription("Find a movie by title in Kodi and play its exact raw file path. Use this when the user asks to play a movie by title."),
+			mcp.WithString("title",
+				mcp.Required(),
+				mcp.Description("Movie title, such as The Devil Wears Prada"),
+			),
+		),
+		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			title, err := req.RequireString("title")
+			if err != nil {
+				return mcp.NewToolResultError(err.Error()), nil
+			}
+
+			file, err := k.GetMovieFileFromTitle(title)
+			if err != nil {
+				return mcp.NewToolResultError(err.Error()), nil
+			}
+
+			result, err := k.PlayFile(fmt.Sprintf("%v", file))
+			if err != nil {
+				return mcp.NewToolResultError(err.Error()), nil
+			}
+
+			return mcp.NewToolResultText(
+				fmt.Sprintf("Started playback: %v\nFile: %v", result, file),
+			), nil
+		},
+	)
 }
 
 func AddStandardTools(s *server.MCPServer, k *kodi.KodiClient) {
