@@ -1,6 +1,6 @@
 package kodi
 
-import(
+import (
 	"fmt"
 )
 
@@ -11,7 +11,12 @@ func (c *KodiClient) GetMovies() (any, error) {
 		return nil, err
 	}
 
-	return res["result"], nil
+	result, ok := res["result"].(map[string]any)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result shape")
+	}
+
+	return result["movies"].([]any), nil
 }
 
 func (c *KodiClient) GetMovieFileFromTitle(title string) (any, error) {
