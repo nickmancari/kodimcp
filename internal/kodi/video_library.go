@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// A list of al the movie titles from the kodi
+// A list of all the movie titles from the kodi
 func (c *KodiClient) GetMovies() (any, error) {
 	res, err := c.Call("VideoLibrary.GetMovies", map[string]any{})
 	if err != nil {
