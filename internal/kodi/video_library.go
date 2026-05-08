@@ -1,17 +1,46 @@
 package kodi
 
-import(
+import (
 	"fmt"
+	"strings"
 )
 
-// A raw response of all the movies in the kodi database with movieid
+// A list of all the movie titles from the kodi
 func (c *KodiClient) GetMovies() (any, error) {
 	res, err := c.Call("VideoLibrary.GetMovies", map[string]any{})
 	if err != nil {
 		return nil, err
 	}
 
-	return res["result"], nil
+	result, ok := res["result"].(map[string]any)
+	if !ok {
+		return nil, fmt.Errorf("unexpected result shape")
+	}
+
+	movies, ok := result["movies"].([]any)
+	if !ok {
+		return nil, fmt.Errorf("movies missing or wrong type")
+	}
+
+	labels := []string{}
+
+	for _, movie := range movies {
+		movieMap, ok := movie.(map[string]any)
+		if !ok {
+			continue
+		}
+
+		label, ok := movieMap["label"].(string)
+		if !ok {
+			continue
+		}
+
+		labels = append(labels, label)
+	}
+
+	list := strings.Join(labels, ", ")
+
+	return list, nil
 }
 
 func (c *KodiClient) GetMovieFileFromTitle(title string) (any, error) {

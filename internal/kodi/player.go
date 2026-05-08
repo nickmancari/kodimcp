@@ -1,8 +1,5 @@
 package kodi
 
-import (
-)
-
 func (c *KodiClient) Pause(playerID int) (any, error) {
 	res, err := c.Call("Player.PlayPause", map[string]any{
 		"playerid": playerID,
@@ -38,4 +35,13 @@ func (c *KodiClient) GetNowPlaying(playerID int) (any, error) {
 
 	return res["result"], nil
 
+}
+
+func (c *KodiClient) GetActivePlayers() (any, error) {
+	res, err := c.Call("Player.GetActivePlayers", map[string]any{})
+	if err != nil {
+		return nil, err
+	}
+
+	return res["result"], nil
 }

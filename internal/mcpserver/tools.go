@@ -25,7 +25,7 @@ func AddPlayerTools(s *server.MCPServer, k *kodi.KodiClient) {
 			return mcp.NewToolResultText(fmt.Sprintf("Pause toggled: %v", result)), nil
 		},
 	)
-	
+
 	s.AddTool(
 		mcp.NewTool("kodi_play_file",
 			mcp.WithDescription("Play a Kodi-accessible file path. The file argument must be the raw path only, such as smb://server/share/movie.mkv. Do not include labels or extra text."),
@@ -95,6 +95,19 @@ func AddPlayerTools(s *server.MCPServer, k *kodi.KodiClient) {
 			), nil
 		},
 	)
+
+	s.AddTool(
+		mcp.NewTool("kodi_get_active_players",
+			mcp.WithDescription("Get all active players info"),
+		),
+		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			result, err := k.GetActivePlayers()
+			if err != nil {
+				return mcp.NewToolResultError(err.Error()), nil
+			}
+			return mcp.NewToolResultText(fmt.Sprintf("Kodi responded: %v", result)), nil
+		},
+	)
 }
 
 func AddStandardTools(s *server.MCPServer, k *kodi.KodiClient) {
@@ -104,6 +117,34 @@ func AddStandardTools(s *server.MCPServer, k *kodi.KodiClient) {
 		),
 		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			result, err := k.Ping()
+			if err != nil {
+				return mcp.NewToolResultError(err.Error()), nil
+			}
+
+			return mcp.NewToolResultText(fmt.Sprintf("Kodi responded: %v", result)), nil
+		},
+	)
+
+	s.AddTool(
+		mcp.NewTool("kodi_shutdown",
+			mcp.WithDescription("Shutdown Kodi"),
+		),
+		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			result, err := k.Shutdown()
+			if err != nil {
+				return mcp.NewToolResultError(err.Error()), nil
+			}
+
+			return mcp.NewToolResultText(fmt.Sprintf("Kodi responded: %v", result)), nil
+		},
+	)
+
+	s.AddTool(
+		mcp.NewTool("kodi_reboot",
+			mcp.WithDescription("Reboot Kodi"),
+		),
+		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			result, err := k.Reboot()
 			if err != nil {
 				return mcp.NewToolResultError(err.Error()), nil
 			}
