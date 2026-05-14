@@ -2,7 +2,10 @@ services:
   kodimcp:
     build: .
     image: kodimcp:latest
+    ports:
+      - "8081:8081"
     environment:
+      MCP_ADDR: ":8081"
       KODI_URL: "http://192.168.1.50:8080"
       KODI_USER: ""
       KODI_PASSWORD: ""
