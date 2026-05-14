@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"os"
-
 	"kodimcp/internal/kodi"
 	"kodimcp/internal/mcpserver"
+	"os"
 
 	"github.com/mark3labs/mcp-go/server"
 )
@@ -19,7 +18,13 @@ func main() {
 
 	s := mcpserver.Init(k)
 
-	if err := server.ServeStdio(s); err != nil {
+	httpServer := server.NewStreamableHTTPServer(s)
+
+	addr := getenv("MCP_ADDR", ":8081")
+
+	fmt.Fprintf(os.Stderr, "Kodi MCP listening on %s\n", addr)
+
+	if err := httpServer.Start(addr); err != nil {
 		fmt.Fprintf(os.Stderr, "server error: %v\n", err)
 		os.Exit(1)
 	}
